@@ -11,6 +11,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
-    
-    // Aquí puedes agregar más rutas protegidas
+    Route::get('/verify-token', [AuthController::class, 'verifyToken']);
+});
+
+// Aquí puedes agregar más rutas protegidas
+Route::middleware('auth:sanctum')->group(function () {
+    // Ejemplo: Route::apiResource('posts', PostController::class);
 });
