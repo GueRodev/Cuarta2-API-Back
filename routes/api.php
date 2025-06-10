@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MateriaController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Rutas públicas (sin autenticación)
@@ -15,6 +16,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::get('/verify-token', [AuthController::class, 'verifyToken']);
+
+    // Agregar estas rutas dentro del grupo middleware('auth:sanctum')
+    Route::prefix('user')->group(function () {
+        Route::get('/profile', [UserController::class, 'show']);
+        Route::put('/profile', [UserController::class, 'update']);
+    });
     
     // ===== NUEVAS RUTAS DE MATERIAS =====
     Route::prefix('materias')->group(function () {
