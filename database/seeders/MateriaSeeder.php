@@ -13,10 +13,7 @@ class MateriaSeeder extends Seeder
      */
     public function run(): void
     {
-        // Para PostgreSQL: Deshabilitar verificaciones temporalmente
-        DB::statement('SET session_replication_role = replica;');
-        
-        // Limpiar tabla antes de insertar
+        // Limpiar tabla antes de insertar (sin comandos administrativos)
         Materia::truncate();
         
         $materias = [
@@ -133,9 +130,6 @@ class MateriaSeeder extends Seeder
         foreach ($chunks as $chunk) {
             Materia::insert($chunk);
         }
-
-        // Restaurar verificaciones de PostgreSQL
-        DB::statement('SET session_replication_role = DEFAULT;');
 
         $this->command->info('✅ Se han insertado ' . count($materias) . ' materias correctamente.');
     }
