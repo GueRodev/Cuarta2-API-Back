@@ -13,8 +13,8 @@ class MateriaSeeder extends Seeder
      */
     public function run(): void
     {
-        // Deshabilitar verificación de claves foráneas temporalmente
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // Para PostgreSQL: Deshabilitar verificaciones temporalmente
+        DB::statement('SET session_replication_role = replica;');
         
         // Limpiar tabla antes de insertar
         Materia::truncate();
@@ -127,13 +127,15 @@ class MateriaSeeder extends Seeder
             ['nombre' => 'Auditoria Operativa', 'codigo' => 'CO-2017', 'creditos' => 4, 'requisitos' => 'EC-2008'],
         ];
 
-        // Insertar todas las materias
-        foreach ($materias as $materia) {
-            Materia::create($materia);
+        // Insertar todas las materias usando chunks para mejor rendimiento
+        $chunks = array_chunk($materias, 50);
+        
+        foreach ($chunks as $chunk) {
+            Materia::insert($chunk);
         }
 
-        // Rehabilitar verificación de claves foráneas
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // Restaurar verificaciones de PostgreSQL
+        DB::statement('SET session_replication_role = DEFAULT;');
 
         $this->command->info('✅ Se han insertado ' . count($materias) . ' materias correctamente.');
     }
